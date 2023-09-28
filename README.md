@@ -1,1 +1,1 @@
-# NeuroMeTA
+# MeTA-Neuro
