@@ -38,7 +38,9 @@ sh build.sh
 
 ## How to use the package:
 * Convert streamlines in trk format to binary image
+```
 meta_bundle_density --bundle CST.trk --reference dti_FA.nii.gz --output CST.nii.gz
+```
 
 * Generating 3D Medial surface for WM bundle using CMREP method: 
 ```
