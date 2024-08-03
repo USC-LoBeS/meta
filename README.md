@@ -67,5 +67,3 @@ meta_streamlines_features --subject 1234 --bundle CST --core CST_global_core.nii
 ## Contact: 
 Iyad Ba Gari <bagari@usc.edu>
  
-## Acknowledgments:
-This research was supported in part by NIH grants R01MH134004, RF1NS136995, P41EB015922, and S10OD032285.
