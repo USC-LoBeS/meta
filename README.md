@@ -65,4 +65,4 @@ meta_streamlines_features --subject 1234 --bundle CST --core CST_global_core.nii
 ```
 
 ## Contact: 
-Iyad Ba Gari <bagari@usc.edu>
+[Iyad Ba Gari](mailto:bagari@usc.edu)
