@@ -16,7 +16,7 @@ description = "Medial Tractography Analysis (MeTA) for along-tract analysis of w
 keywords = ["Diffusion MRI", "tractography", "white matter bundle", "medial volume", "along-tract analysis"]
  
 readme = "README.md"
-license = { file="LICENSE" }
+license = { file="LICENSE.txt" }
 requires-python = ">=3.9,<3.10"
 classifiers = [
     'Intended Audience :: Science/Research',
