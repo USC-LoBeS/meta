@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/USC-LoBeS/meta.git"
+Repository = "https://github.com/bagari/meta"
 
 [project.scripts]
 meta = "meta.main:run_main"

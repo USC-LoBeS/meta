@@ -16,7 +16,7 @@ If you use MeTA code, please cite the following publication:
 ## Installation
 1) Clone this repository:
 ```
-git clone https://github.com/USC-LoBeS/MeTA
+git clone https://github.com/bagari/meta
 ```
 2) Navigate to the meta folder and then create a virtual environment using 
 ```
