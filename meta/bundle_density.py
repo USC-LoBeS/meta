@@ -1,7 +1,7 @@
 import sys
 import argparse
 import nibabel as nib
-from dipy.tracking import utils as utils_trk
+from dipy.tracking import utils
 
 def bundle_density():
 
@@ -24,9 +24,9 @@ def bundle_density():
     
     # Upsample Streamlines
     max_seq_len = abs(ref_affine[0, 0] / 4)
-    streamlines = list(utils_trk.subsegment(streamlines, max_seq_len))
+    streamlines = list(utils.subsegment(streamlines, max_seq_len))
     # Create Density Map
-    dm = utils_trk.density_map(streamlines, vol_dims=ref_shape, affine=ref_affine)
+    dm = utils.density_map(streamlines, vol_dims=ref_shape, affine=ref_affine)
     # Create Binary Map
     dm_binary = dm > 0
 

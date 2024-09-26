@@ -6,7 +6,11 @@ endif(COMMAND cmake_policy)
 
 # Project name
 PROJECT(CMREP)
-# SET(CMAKE_CXX_STANDARD 11)
+
+# Using C++17 standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 # Versioning
 SET(CMREP_VERSION_MAJOR 1)
@@ -14,33 +18,27 @@ SET(CMREP_VERSION_MINOR 0)
 SET(CMREP_VERSION_PATCH 0)
 SET(CMREP_VERSION_FULL "${CMREP_VERSION_MAJOR}.${CMREP_VERSION_MINOR}.${CMREP_VERSION_PATCH}")
 
-# Get ITK
-FIND_PACKAGE(ITK REQUIRED)
-INCLUDE(${ITK_USE_FILE})
-
-# Get VTK
-FIND_PACKAGE(VTK 9 REQUIRED)
+# Build shared libraries
+set(BUILD_SHARED_LIBS ON)
 
 
-# Print ITK/VTK path
-message(STATUS "ITK_DIR: ${ITK_DIR}")
-message(STATUS "VTK_DIR: ${VTK_DIR}")
+# Find packages
+find_package(ITK REQUIRED)
+include(${ITK_USE_FILE})
+find_package(VTK 9 REQUIRED)
+
+# find_package(Boost REQUIRED)
+# find_package(Python3 REQUIRED COMPONENTS Interpreter
+#               PATHS ${CMAKE_INSTALL_PREFIX}/bin)
 
 # Where to get additional modules
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/")
+# SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/")
 
 # Set the include directories
 INCLUDE_DIRECTORIES(${CMREP_SOURCE_DIR}/src ${CMREP_SOURCE_DIR}/src/dijkstra)
 
-
 # List of libraries needed to compile different components of CMREP
-SET(CMREP_FIT_LIBS "")
-
-INCLUDE(ExternalProject)
-
-# Determine which solver wrapper to build for PDE
 SET(CMREP_FIT_LIBS ${ITK_LIBRARIES} ${VTK_LIBRARIES})
-
 
 # Sources for the PDE executable
 SET(COMMON_SRCS
@@ -74,7 +72,6 @@ vtk_module_autoinit(TARGETS cmrep_dijkstra MODULES ${VTK_LIBRARIES})
 ## Create vskel executable
 ADD_EXECUTABLE(cmrep_vskel src/VoronoiSkeletonTool.cxx src/ReadWriteVTK.cxx)
 TARGET_LINK_LIBRARIES(cmrep_vskel cmrep cmrep_dijkstra ${CMREP_FIT_LIBS})
-
 
 ## Create levelset executable
 ADD_EXECUTABLE(vtklevelset src/RealImageToMesh.cxx src/ReadWriteVTK.cxx)

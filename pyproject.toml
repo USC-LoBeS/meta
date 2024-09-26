@@ -6,20 +6,18 @@ build-backend = "setuptools.build_meta"
 name = "meta"
 version = "1.0.0"
 authors = [
-  { name="Iyad Ba Gari", email="iyad.bagari@usc.edu" },
+  { name="Iyad Ba Gari", email="bagari@usc.edu" },
 ]
 maintainers = [
-  { name="Iyad Ba Gari", email="iyad.bagari@usc.edu" },
+  { name="Iyad Ba Gari", email="bagari@usc.edu" },
 ]
 
 description = "Medial Tractography Analysis (MeTA) for along-tract analysis of white matter bundles"
 keywords = ["Diffusion MRI", "tractography", "white matter bundle", "medial volume", "along-tract analysis"]
  
 readme = "README.md"
-
-license = { file="LICENSES/LICENSE" }
-requires-python = ">=3.9.19"
-
+license = { file="LICENSE" }
+requires-python = ">=3.9,<3.10"
 classifiers = [
     'Intended Audience :: Science/Research',
     'Programming Language :: Python :: 3',
@@ -27,17 +25,17 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/bagari/meta"
+Repository = "https://github.com/USC-LoBeS/meta.git"
 
 [project.scripts]
 meta = "meta.main:run_main"
 meta_segment_features = "meta.features:segment_features"
 meta_streamlines_features = "meta.features:streamlines_features"
-meta_bundle_density = "meta.bundel_density:bundle_density"
+meta_bundle_density = "meta.bundle_density:bundle_density"
 
 [tool.setuptools.package-data]
 meta = ["*.yaml"]
 
 [tool.setuptools.packages.find]
 include = ["meta*"]
-exclude = ["LICENSES*", "src*", "environment*", "CMakeLists*"]
+exclude = ["src*", "environment*", "CMakeLists*"]

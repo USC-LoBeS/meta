@@ -97,7 +97,7 @@ def perform_dtw(model_bundle, subject_bundle, num_segments, mask_img=None, trans
 
     reference_image = nib.load(mask_img)
 
-    ## Trasform the Template bundle to the subject space world cordinates and then to the subject voxel space cordinates:
+    ## Transform the Template bundle to the subject space world cordinates and then to the subject voxel space cordinates:
     model_streamlines = load_tractogram(model_bundle, "same", bbox_valid_check=False).streamlines
 
     if transform is not None:
@@ -113,7 +113,7 @@ def perform_dtw(model_bundle, subject_bundle, num_segments, mask_img=None, trans
     m_centroid = m_qb.cluster(transformed_model_bundles).centroids
     print('Model: Centroid length... ', np.mean([length(streamline) for streamline in m_centroid]))
 
-    ## Trasform the Subject bundle to the subject voxel cordinates:
+    ## Transform the Subject bundle to the subject voxel cordinates:
     subject_streamlines = load_tractogram(subject_bundle, "same", bbox_valid_check=False).streamlines
     transformed_subject_bundles = transform_streamlines(subject_streamlines, np.linalg.inv(reference_image.affine))
     s_feature = ResampleFeature(nb_points=500)
