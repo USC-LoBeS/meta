@@ -6,6 +6,7 @@
 
 MeTA is a workflow implemented to minimize microstructural heterogeneity in diffusion MRI (dMRI) metrics by extracting and parcellating the core volume along the bundle length in the voxel-space directly while effectively preserving bundle shape and efficiently capturing the regional variation within and along white matter (WM) bundles.
 
+#### Contact: Iyad Ba Gari <bagari@usc.edu>
 
 If you use MeTA code, please cite the following publication:
 * Heritability and Genetic Correlations Along the Corticospinal Tract. In International Workshop on Computational Diffusion MRI, CDMRI 2024 (Accepted)
@@ -64,5 +65,4 @@ meta_segment_features --subject 1234 --bundle CST --mask CST_segments_local_core
 meta_streamlines_features --subject 1234 --bundle CST --core CST_global_core.nii.gz --all CST.nii.gz --tractogram CST.trk --output CST_streamlines_metrics.csv
 ```
 
-## Contact: 
-[Iyad Ba Gari](mailto:bagari@usc.edu)
+
