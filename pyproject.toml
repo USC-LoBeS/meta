@@ -17,7 +17,7 @@ keywords = ["Diffusion MRI", "tractography", "white matter bundle", "medial volu
  
 readme = "README.md"
 license = { file="LICENSE.txt" }
-requires-python = ">=3.9,<3.10"
+requires-python = ">=3.8,<3.12"
 classifiers = [
     'Intended Audience :: Science/Research',
     'Programming Language :: Python :: 3',
