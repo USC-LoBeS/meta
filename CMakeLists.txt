@@ -17,21 +17,22 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
 # Get VTK
-find_package(VTK 9 REQUIRED COMPONENTS
-  CommonCore
-  CommonDataModel
-  CommonMath
-  CommonTransforms
-  FiltersCore
-  FiltersGeneral
-  FiltersGeometry
-  FiltersModeling
-  FiltersSources
-  FiltersVerdict
-  IOGeometry
-  IOImage
-  IOLegacy
-  IOPLY)
+# find_package(VTK 9 REQUIRED COMPONENTS
+#   CommonCore
+#   CommonDataModel
+#   CommonMath
+#   CommonTransforms
+#   FiltersCore
+#   FiltersGeneral
+#   FiltersGeometry
+#   FiltersModeling
+#   FiltersSources
+#   FiltersVerdict
+#   IOGeometry
+#   IOImage
+#   IOLegacy
+#   IOPLY)
+find_package(VTK 9 REQUIRED)
 
 # Set the include directories
 include_directories(${CMREP_SOURCE_DIR}/src 
