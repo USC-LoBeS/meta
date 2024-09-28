@@ -7,7 +7,6 @@ project(CMREP VERSION 1.0.0 LANGUAGES CXX)
 # Use C++17 standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Build shared libraries
 set(BUILD_SHARED_LIBS ON)
@@ -32,15 +31,14 @@ find_package(VTK 9 REQUIRED COMPONENTS
   IOImage
   IOLegacy
   IOPLY)
-# find_package(VTK 9 REQUIRED)
+
+# Get additional modules
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/")
 
 # Set the include directories
 include_directories(${CMREP_SOURCE_DIR}/src 
                     ${CMREP_SOURCE_DIR}/src/dijkstra
 )
-
-# Get additional modules
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/")
 
 # List of libraries needed to compile different components of CMREP
 SET(CMREP_FIT_LIBS ${ITK_LIBRARIES} ${VTK_LIBRARIES})
@@ -84,19 +82,6 @@ target_link_libraries(cmrep_vskel cmrep cmrep_dijkstra ${CMREP_FIT_LIBS})
 ## Create levelset executable
 add_executable(vtklevelset src/RealImageToMesh.cxx src/ReadWriteVTK.cxx)
 target_link_libraries(vtklevelset cmrep ${CMREP_FIT_LIBS})
-
-# Ensure that the RPATH is set correctly
-if(APPLE)
-  set_target_properties(cmrep PROPERTIES INSTALL_RPATH "@loader_path/../lib")
-  set_target_properties(cmrep_dijkstra PROPERTIES INSTALL_RPATH "@loader_path/../lib")
-  set_target_properties(cmrep_vskel PROPERTIES INSTALL_RPATH "@loader_path/../lib")
-  set_target_properties(vtklevelset PROPERTIES INSTALL_RPATH "@loader_path/../lib")
-else()
-  set_target_properties(cmrep PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
-  set_target_properties(cmrep_dijkstra PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
-  set_target_properties(cmrep_vskel PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
-  set_target_properties(vtklevelset PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
-endif()
 
 # Install rules
 install(TARGETS cmrep cmrep_dijkstra cmrep_vskel vtklevelset
