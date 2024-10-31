@@ -38,4 +38,4 @@ meta = ["*.yaml"]
 
 [tool.setuptools.packages.find]
 include = ["meta*"]
-exclude = ["src*", "environment*", "CMakeLists*"]
+exclude = ["src*", "environment*", "CMakeLists*", "resources*"]
