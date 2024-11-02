@@ -1,8 +1,13 @@
 # Minimum required CMake version
-cmake_minimum_required(VERSION 3.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
+
+# Required CMake version
 if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)  
+  cmake_policy(SET CMP0077 NEW)
+  cmake_policy(SET CMP0042 NEW)
+  cmake_policy(SET CMP0167 NEW)
+endif()
 
 # Project name and version
 project(CMREP VERSION 1.0.0)
