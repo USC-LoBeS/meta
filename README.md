@@ -21,39 +21,57 @@ If you use MeTA code, please cite the following publication:
 * [Yushkevich, P.A.: Continuous medial representation of brain structures using the biharmonic PDE. Neuroimage 45(1 Suppl), S99–110 (Mar 2009)](https://doi.org/10.1016/j.neuroimage.2008.10.051)
 
 ## Installation
-Create an environment with python version >=3.9 and <3.12, e.g:
-```
+
+There are two options to use the package: via Conda or Docker/Singularity.
+
+### Conda Installation
+
+Create an environment with Python version >=3.9 and <3.12. For example:
+
+```bash
 conda config --add channels bioconda
 conda create -n meta python==3.10
 conda install bioconda::meta-neuro
 ```
-
 > NOTE: Use `meta --help` to see the package options.
 
-## How to use the package:
-* Convert streamlines in trk format to binary image
+
+### Docker/Singularity Installation
+To pull the Singularity image:
+```bash
+singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.0--py310haf7471d_0
+singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.0--py311h1752f0f_0
+singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.0--py39hc022aa2_0
 ```
+
+To execute the package with Singularity:
+```bash
+singularity exec meta-neuro_1.0.0--py310haf7471d_0.sif meta --help
+```
+
+## How to use the package:
+* Convert streamlines in TRK format to a binary image:
+```bash
 meta_bundle_density --bundle CST.trk --reference dti_FA.nii.gz --output CST.nii.gz
 ```
 
-* Generating 3D Medial surface for WM bundle using CMREP method: 
-```
+* Generate a 3D Medial Surface for WM Bundle Using the CMREP Method: 
+```bash
 vtklevelset CST.nii.gz CST.vtk 0.1
 cmrep_vskel -c 3 -p 1.5 -g CST.vtk CST_skeleton.vtk
-````
-
-* Running Medial Tractography Analysis (MeTA):
 ```
+
+* Run Medial Tractography Analysis (MeTA):
+```bash
 meta --subject 1234 --bundle CST --medial_surface CST_skeleton.vtk --volume CST.vtk --sbundle CST.trk --mbundle CST_model.trk --mask CST.nii.gz --num_segments 15 --output CST
 ```
 
-* Extracting segment features:
-```
+* Extract Segment Features:
+```bash
 meta_segment_features --subject 1234 --bundle CST --mask CST_segments_local_core.nii.gz --map FA.nii.gz --output CST_FA_15_segments_local_core_metrics.csv
 ```
 
-* Extracting streamline features:
-
-```
+* Extract Streamline Features:
+```bash
 meta_streamlines_features --subject 1234 --bundle CST --mask CST.nii.gz --tractogram CST.trk --output CST_streamlines_metrics.csv
 ```
