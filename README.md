@@ -1,3 +1,9 @@
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/bagari/meta?logo=Github)
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/meta-neuro/README.html)
+![Downloads](https://anaconda.org/bioconda/meta-neuro/badges/downloads.svg)
+![License](https://anaconda.org/bioconda/meta-neuro/badges/license.svg)
+![Platforms](https://anaconda.org/bioconda/meta-neuro/badges/platforms.svg)
+
 ## Medial Tractography Analysis (MeTA)
 
 <p align="center">
@@ -15,26 +21,13 @@ If you use MeTA code, please cite the following publication:
 * [Yushkevich, P.A.: Continuous medial representation of brain structures using the biharmonic PDE. Neuroimage 45(1 Suppl), S99–110 (Mar 2009)](https://doi.org/10.1016/j.neuroimage.2008.10.051)
 
 ## Installation
-1) Clone this repository:
+Create an environment with python version >=3.9 and <3.12, e.g:
 ```
-git clone https://github.com/bagari/meta
+conda config --add channels bioconda
+conda create -n meta python==3.10
+conda install bioconda::meta-neuro
 ```
-2) Navigate to the meta folder and then create a virtual environment using 
-```
-conda env create -f environment.yml
-```
-3) Activate the environment:
-```
-conda activate meta
-```
-4) Install MeTA package
-```
-python -m pip install .
-```
-5) Build the CMREP C++ code:
-```
-sh build.sh
-```
+
 > NOTE: Use `meta --help` to see the package options.
 
 ## How to use the package:
@@ -51,7 +44,7 @@ cmrep_vskel -c 3 -p 1.5 -g CST.vtk CST_skeleton.vtk
 
 * Running Medial Tractography Analysis (MeTA):
 ```
-meta --subject 1234 --bundle CST --medial_surface CST_skeleton.vtk --volume CST.vtk --sbundle CST.trk --mbundle CST_model.trk --mask CST.nii.gz --percent 0.1 --num_segments 15 --output CST
+meta --subject 1234 --bundle CST --medial_surface CST_skeleton.vtk --volume CST.vtk --sbundle CST.trk --mbundle CST_model.trk --mask CST.nii.gz --num_segments 15 --output CST
 ```
 
 * Extracting segment features:
@@ -62,7 +55,5 @@ meta_segment_features --subject 1234 --bundle CST --mask CST_segments_local_core
 * Extracting streamline features:
 
 ```
-meta_streamlines_features --subject 1234 --bundle CST --core CST_global_core.nii.gz --all CST.nii.gz --tractogram CST.trk --output CST_streamlines_metrics.csv
+meta_streamlines_features --subject 1234 --bundle CST --mask CST.nii.gz --tractogram CST.trk --output CST_streamlines_metrics.csv
 ```
-
-
