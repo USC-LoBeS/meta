@@ -1,8 +1,9 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/bagari/meta?logo=Github)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/meta-neuro/README.html)
+![Platforms](https://anaconda.org/bioconda/meta-neuro/badges/platforms.svg)
 ![Downloads](https://anaconda.org/bioconda/meta-neuro/badges/downloads.svg)
 ![License](https://anaconda.org/bioconda/meta-neuro/badges/license.svg)
-![Platforms](https://anaconda.org/bioconda/meta-neuro/badges/platforms.svg)
+
 
 ## Medial Tractography Analysis (MeTA)
 
