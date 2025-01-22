@@ -61,21 +61,20 @@ def segment_features():
         return
     args = parser.parse_args()
 
-
-    features = dict()
-    features['subjectID'] = []
-    features['bundle'] = []
-    features['segment'] = []
-    features['mean'] = []
-
-    ## Dictionary to store voxel-wise values
-    voxel_features = dict()
-    voxel_features['subjectID'] = []
-    voxel_features['bundle'] = []
-    voxel_features['segment'] = []
-    voxel_features['value'] = []
-
     try:
+        features = dict()
+        features['subjectID'] = []
+        features['bundle'] = []
+        features['segment'] = []
+        features['mean'] = []
+
+        ## Dictionary to store voxel-wise values
+        voxel_features = dict()
+        voxel_features['subjectID'] = []
+        voxel_features['bundle'] = []
+        voxel_features['segment'] = []
+        voxel_features['value'] = []
+
         # Load the mask and microstructure map
         micro_map = nib.load(args.map).get_fdata()
         data = nib.load(args.mask).get_fdata()
@@ -99,19 +98,18 @@ def segment_features():
             voxel_features['segment'].extend([label]*np.sum(data == label))
             voxel_features['value'].extend(micro_map[data == label])
 
+        ## Save the features to a csv file
+        features_df = pd.DataFrame(features)
+        features_df.to_csv(f"{args.output}/{args.subject}_{args.bundle}_segments_average.csv", index=False)
+
+        ## Save the voxel-wise features to a HDF5 file
+        voxel_features_df = pd.DataFrame(voxel_features)
+        voxel_features_df.to_csv(f"{args.output}/{args.subject}_{args.bundle}_segments_voxelwise.csv", index=False)
+        # voxel_features_df.to_hdf(f"{args.output}/{args.subject}_{args.bundle}_segments_voxelwise.h5", key='df', mode='w', complevel=9)
+        print('Finished extracting the features')
+
     except Exception as e:
         print(f'Error in extracting features from {args.mask}: {str(e)}', flush=True)
-
-    ## Save the features to a csv file
-    features_df = pd.DataFrame(features)
-    features_df.to_csv(f"{args.output}/{args.subject}_{args.bundle}_segments_average.csv", index=False)
-
-    ## Save the voxel-wise features to a HDF5 file
-    voxel_features_df = pd.DataFrame(voxel_features)
-    voxel_features_df.to_csv(f"{args.output}/{args.subject}_{args.bundle}_segments_voxelwise.csv", index=False)
-    # voxel_features_df.to_hdf(f"{args.output}/{args.subject}_{args.bundle}_segments_voxelwise.h5", key='df', mode='w', complevel=9)
-    print('Finished extracting the features')
-
 
 
 ## Compute bundle features based on streamlines
