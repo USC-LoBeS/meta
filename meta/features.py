@@ -86,7 +86,8 @@ def segment_features():
                 continue
 
             ## Compute mean for a label of microstructure map
-            mean_value = np.nanmean(micro_map[data == label])
+            # mean_value = np.nanmean(micro_map[data == label])
+            mean_value = np.nanmean(micro_map[(data == label) & (micro_map != 0)])
             features['subjectID'].append(args.subject)
             features['bundle'].append(args.bundle)
             features['segment'].append(label)
