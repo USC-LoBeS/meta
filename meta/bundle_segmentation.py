@@ -205,30 +205,35 @@ def perform_dtw(model_bundle, subject_bundle, num_segments, mask_img=None, trans
     excluded_idx = np.where(std_distances <= 3.5)[0]
 
     ## Filter the final_corres based on pairwise distances that have std <= 3.5
-    excluded_start = excluded_idx[0]
-    excluded_end = excluded_idx[-1]
+    if excluded_idx.size > 0:
+        
+        excluded_start = excluded_idx[0]
+        excluded_end = excluded_idx[-1]
+        filtered_arrays = []
+        for idx, array in enumerate(final_corres):
+            combined_array = []
+            if excluded_start > 1:
+                start_point = array[0]
+                end_point = array[excluded_start]
+                side_1_points = np.linspace(start_point, end_point, excluded_start + 1)[1:-1]
+                combined_array.extend(array[0:1])
+                combined_array.extend(side_1_points)
+            elif excluded_start <= 1:
+                combined_array.extend(array[0:excluded_start])
+            combined_array.extend(array[excluded_start:excluded_end+1])
+            if num_segments - excluded_end > 1:
+                start_point = array[excluded_end]
+                end_point = array[-1]
+                side_2_points = np.linspace(start_point, end_point, num_segments - excluded_end)[1:-1]
+                combined_array.extend(side_2_points)
+                combined_array.extend(array[-1:])
+            elif num_segments - excluded_end == 1:
+                combined_array.extend(array[-1:])
 
-    filtered_arrays = []
-    for idx, array in enumerate(final_corres):
-        combined_array = []
-        if excluded_start > 1:
-            start_point = array[0]
-            end_point = array[excluded_start]
-            side_1_points = np.linspace(start_point, end_point, excluded_start + 1)[1:-1]
-            combined_array.extend(array[0:1])
-            combined_array.extend(side_1_points)
-        elif excluded_start <= 1:
-            combined_array.extend(array[0:excluded_start])
-        combined_array.extend(array[excluded_start:excluded_end+1])
-        if num_segments - excluded_end > 1:
-            start_point = array[excluded_end]
-            end_point = array[-1]
-            side_2_points = np.linspace(start_point, end_point, num_segments - excluded_end)[1:-1]
-            combined_array.extend(side_2_points)
-            combined_array.extend(array[-1:])
-        elif num_segments - excluded_end == 1:
-            combined_array.extend(array[-1:])
+            filtered_arrays.append(np.array(combined_array))
+    else:
+        filtered_arrays = final_corres
+        print("No filter required...")
 
-        filtered_arrays.append(np.array(combined_array))
     print("Total number filtered centroids:", len(filtered_arrays))
     return filtered_arrays
