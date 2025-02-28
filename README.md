@@ -47,7 +47,7 @@ singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py311h62e25fe_
 
 To execute the package with singularity:
 ```bash
-singularity exec meta-neuro_1.0.0--py310h6ccb7bc_0.sif meta --help
+singularity exec meta-neuro_1.0.1--py310h6ccb7bc_0.sif meta --help
 ```
 
 ## How to use the package:
