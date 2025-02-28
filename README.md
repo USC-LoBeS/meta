@@ -38,16 +38,16 @@ conda install bioconda::meta-neuro
 
 
 ### Docker/Singularity Installation
-To pull the Singularity image:
+To pull the singularity image:
 ```bash
-singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.0--py310haf7471d_0
-singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.0--py311h1752f0f_0
-singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.0--py39hc022aa2_0
+singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py39hb5914e5_0
+singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py310h6ccb7bc_0
+singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py311h62e25fe_0
 ```
 
-To execute the package with Singularity:
+To execute the package with singularity:
 ```bash
-singularity exec meta-neuro_1.0.0--py310haf7471d_0.sif meta --help
+singularity exec meta-neuro_1.0.0--py310h6ccb7bc_0.sif meta --help
 ```
 
 ## How to use the package:
