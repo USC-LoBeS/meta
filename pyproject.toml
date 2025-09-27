@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "meta"
-version = "1.0.0"
+version = "2.0.0"
 authors = [
-  { name="Iyad Ba Gari", email="bagari@usc.edu" },
+  { name="Iyad Ba Gari", email="iyad.bagari@usc.edu" },
 ]
 maintainers = [
-  { name="Iyad Ba Gari", email="bagari@usc.edu" },
+  { name="Iyad Ba Gari", email="iyad.bagari@usc.edu" },
 ]
 
 description = "Medial Tractography Analysis (MeTA) for along-tract analysis of white matter bundles"
@@ -28,10 +28,11 @@ classifiers = [
 Repository = "https://github.com/bagari/meta"
 
 [project.scripts]
-meta = "meta.main:run_main"
-meta_segment_features = "meta.features:segment_features"
-meta_streamlines_features = "meta.features:streamlines_features"
-meta_bundle_density = "meta.bundle_density:bundle_density"
+meta = "meta.workflows.meta:run_main"
+density_map = "meta.core.density:density_map"
+shape_metrics = "meta.metrics.shape:shape_features"
+volumetric_profile = "meta.metrics.profile:volumetric_profile"
+streamlines_profile = "meta.metrics.profile:streamlines_profile"
 
 [tool.setuptools.package-data]
 meta = ["*.yaml"]
@@ -39,3 +40,4 @@ meta = ["*.yaml"]
 [tool.setuptools.packages.find]
 include = ["meta*"]
 exclude = ["src*", "environment*", "CMakeLists*", "resources*"]
+
