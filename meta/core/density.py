@@ -19,7 +19,7 @@ logging.basicConfig(
 def density_map():
 
     parser = argparse.ArgumentParser(description='Convert streamlines of white matter bundle into a density map and binary mask.')
-    parser.add_argument('--bundle', type=str, help='Path to the bundle file containing streamlines', required=True)
+    parser.add_argument('--tractogram', type=str, help='Path to the bundle file containing streamlines', required=True)
     parser.add_argument('--reference', type=str, help='Path to the reference image', required=True)
     parser.add_argument('--output', type=str, help='Path to the output binary mask file', required=True)
     
@@ -34,7 +34,7 @@ def density_map():
     ref_shape = ref_img.get_fdata().shape
 
     # Load streamlines
-    streamlines = read_streamlines(args.bundle)
+    streamlines = read_streamlines(args.tractogram)
     max_seq_len = abs(ref_affine[0, 0] / 4)
     streamlines = list(utils.subsegment(streamlines, max_seq_len))
 
