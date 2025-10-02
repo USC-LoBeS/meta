@@ -33,8 +33,6 @@ conda config --add channels bioconda
 conda create -n meta python==3.10
 conda install bioconda::meta-neuro
 ```
-> NOTE: Use `meta --help` to see the package options.
-
 
 ### Singularity Installation
 To pull the singularity image using apptainer:
@@ -43,10 +41,12 @@ apptainer pull meta_1_0_1.sif docker://quay.io/biocontainers/meta-neuro:1.0.1--p
 
 apptainer run meta_1_0_1.sif meta --help
 ```
+> NOTE: Use `meta --help` to see the package options.
+
 
 ## How to use the package:
 
-### Create Medial Surface for WM Bundle:
+### Generate Medial Surface for WM Bundle:
 Medial surface is extract based on Continuous medial representation (CMREP) method [Yushkevich, 2009](https://doi.org/10.1016/j.neuroimage.2008.10.051).
 * Convert streamlines in trk/tck/tt.gz formats to a binary image.
 
@@ -54,7 +54,7 @@ Medial surface is extract based on Continuous medial representation (CMREP) meth
 density_map --tractogram CST.trk --reference dti_FA.nii.gz --output CST.nii.gz
 ```
 
-* Generate a 3D Medial Surface for WM Bundle Using the CMREP Method:
+* Generate a 3D Medial Surface for WM Bundle using the CMREP Method:
 
 ```bash
 vtklevelset CST.nii.gz CST.vtk 0.1
