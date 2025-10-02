@@ -37,22 +37,24 @@ conda install bioconda::meta-neuro
 
 
 ### Docker/Singularity Installation
-To pull the singularity image:
+To pull the singularity image using apptainer:
 ```bash
-singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py39hb5914e5_0
-singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py310h6ccb7bc_0
+apptainer pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py311h62e25fe_0
+```
 singularity pull docker://quay.io/biocontainers/meta-neuro:1.0.1--py311h62e25fe_0
 ```
 
 To execute the package with singularity:
 ```bash
+apptainer run meta-neuro_1.0.1--py310h6ccb7bc_0.sif meta --help
 singularity exec meta-neuro_1.0.1--py310h6ccb7bc_0.sif meta --help
 ```
 
 ## How to use the package:
 * Convert streamlines in TRK format to a binary image:
+save binary mask and density map of the bundle.
 ```bash
-meta_bundle_density --bundle CST.trk --reference dti_FA.nii.gz --output CST.nii.gz
+density_map --bundle CST.trk --reference dti_FA.nii.gz --output CST.nii.gz
 ```
 
 * Generate a 3D Medial Surface for WM Bundle Using the CMREP Method: 
@@ -71,7 +73,37 @@ meta --subject 1234 --bundle CST --medial_surface CST_skeleton.vtk --volume CST.
 meta_segment_features --subject 1234 --bundle CST --mask CST_segments_local_core.nii.gz --map FA.nii.gz --output CST_FA_15_segments_local_core_metrics.csv
 ```
 
-* Extract Streamline Features:
+## Extract Bundle Profile:
+### Voxel-based:
+Compute volumetric profile based on binary masks and microstructure maps e.g., FA, MD, RD, AD, etc. Output two files: 1) *_segments_average.csv file with the average profile along the bundle length, and 2) *_segments_voxelwise.h5: the profile for each voxel in the bundle.
+
+How to use:
 ```bash
-meta_streamlines_features --subject 1234 --bundle CST --mask CST.nii.gz --tractogram CST.trk --output CST_streamlines_metrics.csv
+volumetric_profile --subject 1234 --bundle CST --mask CST.nii.gz --map FA.nii.gz --output /output_folder
+```
+
+### Streamline-based:
+Compute streamline profile based on tractography and microstructure maps e.g., FA, MD, RD, AD, etc. output two files: 1) *_streamlines_mean.csv file with the average profile along the bundle length, and 2) *_streamlines_points.h5: the profile for each point of streamline.
+
+How to use:
+```bash
+streamlines_profile --subject 1234 --bundle CST --sbundle CST.trk --mask CST.nii.gz --map FA.nii.gz --output /output_folder
+```
+
+
+## Extract Bundle Shape Features:
+Bundle shape features implemented based on [Yeh et al., 2020](https://doi.org/10.1016/j.neuroimage.2020.117329). The following features are extracted:
+1. Total number of streamlines
+2. Average streamlines length
+3. Span
+4. Curl
+5. Volume
+6. Surface area
+7. Diameter
+8. Elongation
+9. Irregularity
+
+How to use:
+```bash
+shape_metrics --subject 1234 --bundle CST --mask CST.nii.gz --tractogram CST.trk --output CST_streamlines_metrics.csv
 ```
