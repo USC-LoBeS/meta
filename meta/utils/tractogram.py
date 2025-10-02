@@ -22,10 +22,15 @@ def reorient_streamlines(m_centroid, s_centroids):
         end_distance = np.linalg.norm(m_centroid[-1] - s_centroid[-1])
         end = np.linalg.norm(m_centroid[0] - s_centroid[0])
 
-        if (start_distance < end_distance) and (start < end):
-            return True
-        return False
+        return (start_distance < end_distance) and (start < end)
 
+
+    # Ensure inputs are lists of arrays:
+    if isinstance(s_centroids, np.ndarray) and s_centroids.ndim == 2:
+        s_centroids = [s_centroids]
+    if isinstance(m_centroid, np.ndarray) and m_centroid.ndim == 2:
+        m_centroid = [m_centroid]
+        
     oriented_s_centroids = []
     for s_centroid in s_centroids:
         if is_flipped(m_centroid, s_centroid):
