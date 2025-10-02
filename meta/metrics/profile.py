@@ -90,7 +90,7 @@ def streamlines_profile():
     parser = argparse.ArgumentParser(description='Compute streamlines profile (average mean and point-wise) of a white matter bundle.')
     parser.add_argument("--subject", type=str, help='Subject ID', required=True)
     parser.add_argument("--bundle", type=str, help='White matter bundle name', required=True)
-    parser.add_argument("--sbundle", type=str, help='Streamlines of subject bundle', required=True)
+    parser.add_argument("--tractogram", type=str, help='Streamlines of subject bundle', required=True)
     parser.add_argument("--mask", type=str, help='Path to white matter bundle mask', required=True)
     parser.add_argument("--map", type=str, help='Brain microstructure map, e.g. FA, MD, etc.', required=True)
     parser.add_argument("--output", type=str, help='Output directory to save extracted features', required=True)
@@ -109,14 +109,14 @@ def streamlines_profile():
         labels_data = labels_img.get_fdata()
 
         ## Load streamlines:
-        streamlines = read_streamlines(args.sbundle)
+        streamlines = read_streamlines(args.tractogram)
         print(f"Number of streamlines: {len(streamlines)}")
         sls_voxels = transform_streamlines(streamlines, np.linalg.inv(micro_map.affine))
         sls_pts = np.vstack(sls_voxels)
 
         ## Extract microstructure values and labels for each point along the streamlines:
-        metric_vals = map_coordinates(metric_data, sls_pts.T, order=0, mode="nearest")
-        label_vals  = map_coordinates(labels_data, sls_pts.T, order=0, mode="nearest").astype(int)
+        metric_vals = map_coordinates(metric_data, sls_pts.T, order=0, mode="constant")
+        label_vals  = map_coordinates(labels_data, sls_pts.T, order=0, mode="constant").astype(int)
 
         ## Save the point-wise features to HDF5:
         df = pd.DataFrame({
@@ -128,7 +128,7 @@ def streamlines_profile():
         df = df[df.segment != 0]
         print(df.segment.unique())
 
-        hdf5_path = f"{args.output}/{args.subject}_{args.bundle}_streamlines_points.h5"
+        hdf5_path = f"{args.output}/{args.subject}_{args.bundle}_streamlines_pointwise.h5"
         df.to_hdf(hdf5_path, key='df', mode='w', complevel=9)
         logging.info(f"Saved streamlines point-wise features to {hdf5_path}")
 
@@ -137,7 +137,7 @@ def streamlines_profile():
             df.groupby(["subjectID", "bundle", "segment"], as_index=False)
             .agg(mean=("value", "mean"))
         )
-        csv_path = f"{args.output}/{args.subject}_{args.bundle}_streamlines_mean.csv"
+        csv_path = f"{args.output}/{args.subject}_{args.bundle}_streamlines_average.csv"
         df_mean.to_csv(csv_path, index=False)
         logging.info(f"Saved streamlines segment-wise mean features to {csv_path}")
 
