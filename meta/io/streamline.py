@@ -82,9 +82,9 @@ def parse_tt(tinytrack):
     return streamlines, tt_affine, dimension, voxel_size, voxel_order
 
 
-def read_streamlines(bundle_path):
+def read_streamlines(bundle_path, reference=None, transform=None):
     """
-    Read streamlines from a bundle file, supporting TRK, TCK, and TinyTrack formats.
+    Read streamlines from a bundle file, supporting TRK, TCK, TRX and TinyTrack formats.
     
     Parameters:
         bundle_path: Path to segmented white matter bundle file.
@@ -92,23 +92,42 @@ def read_streamlines(bundle_path):
     Returns:
         streamlines: List of streamlines in RASMM space.
     """
+    if bundle_path.endswith('.tck'):
+        bundle = load_tractogram(bundle_path, reference, bbox_valid_check=False)
+        streamlines = bundle.streamlines
+        if transform is not None:
+            streamlines = transform_streamlines(streamlines, transform)
 
-    if bundle_path.endswith(('.trk', '.tck')):
-        streamlines =  load_tractogram(bundle_path, "same", bbox_valid_check=False).streamlines
+        groups = bundle.groups if hasattr(bundle, 'groups') else {}
+        affine = bundle.affine if hasattr(bundle, 'affine') else np.eye(4)
+        dimension = bundle.dimensions if hasattr(bundle, 'dimensions') else None
+        return streamlines, groups, affine, dimension
 
-    elif bundle_path.endswith('.tt.gz'):
+    if bundle_path.endswith(('.trk', '.trx')):
+        bundle =  load_tractogram(bundle_path, "same", bbox_valid_check=False)
+        streamlines = bundle.streamlines
+        if transform is not None:
+            streamlines = transform_streamlines(streamlines, transform)
+
+        groups = bundle.groups if hasattr(bundle, 'groups') else {}
+        affine = bundle.affine if hasattr(bundle, 'affine') else np.eye(4)
+        dimension = bundle.dimensions if hasattr(bundle, 'dimensions') else None
+        return streamlines, groups, affine, dimension
+
+    if bundle_path.endswith('.tt.gz'):
         ## Read DSI-Studio format (TinyTrack):
-        streamlines, tt_affine, _, _, _ = parse_tt(bundle_path)
+        streamlines, tt_affine, dimension, _, _ = parse_tt(bundle_path)
         streamlines_lps_center = [s - 0.5 for s in streamlines]
         streamlines = transform_streamlines(streamlines_lps_center, tt_affine)
-        
-    else:
-        raise ValueError(f"Only .trk, .tck, .tt.gz are supported")
+        if transform is not None:
+            streamlines = transform_streamlines(streamlines, transform)
 
-    if len(streamlines) == 0:
-        sys.exit(f"No streamlines found in {bundle_path}")
-
-    return streamlines
+        groups = {}
+        affine = tt_affine
+        dimension = dimension
+        return streamlines, groups, affine, dimension
+    
+    raise ValueError(f"Only .trk, .tck, .tt.gz are supported")
 
 
 def convert_tinytrack_to_trk_tck(bundle_path, format='trk'):

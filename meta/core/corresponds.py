@@ -73,7 +73,7 @@ def get_alignment(model, subject, n_segments, mask_img, transform=None, inverse=
     ref_image = nib.load(mask_img)
 
     ## Transform model to subject space:
-    model_streamlines = read_streamlines(model)
+    model_streamlines, _, _, _ = read_streamlines(model)
     if transform is not None:
         transformation_matrix = load_transformation(transform)
         if inverse:
@@ -86,7 +86,7 @@ def get_alignment(model, subject, n_segments, mask_img, transform=None, inverse=
     m_centroid = get_centroids(transformed_model, n_points=n_segments, threshold=np.inf)
 
     ## Subject bundle:
-    subject_streamlines = read_streamlines(subject)
+    subject_streamlines, _, _, _ = read_streamlines(subject)
     transformed_subject = transform_streamlines(subject_streamlines, np.linalg.inv(ref_image.affine))
     s_centroid = get_centroids(transformed_subject, n_points=500, threshold=np.inf)
 

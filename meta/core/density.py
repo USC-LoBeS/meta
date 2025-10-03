@@ -34,7 +34,7 @@ def density_map():
     ref_shape = ref_img.get_fdata().shape
 
     # Load streamlines
-    streamlines = read_streamlines(args.tractogram)
+    streamlines, _, _, _ = read_streamlines(args.tractogram)
     max_seq_len = abs(ref_affine[0, 0] / 4)
     streamlines = list(utils.subsegment(streamlines, max_seq_len))
 

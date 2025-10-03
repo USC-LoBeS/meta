@@ -71,7 +71,7 @@ def shape_features():
 
     mask = nib.load(args.mask)
 
-    streamlines = read_streamlines(args.tractogram)
+    streamlines, _, _, _ = read_streamlines(args.tractogram)
     
     streamlines_count = len(streamlines)
     streamlines_length = bundle_length(streamlines)
