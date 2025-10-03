@@ -5,7 +5,7 @@
 - Added option to invert the transform matrix.  
 - Fixed along-length segmentation/labeling issue when subject bundles were cropped or incomplete.  
 - Added option to extract volumetric and streamline profiles.  
-- Added streamline shape metrics.  
+- Added streamline shape metrics.
 
 ---
 
