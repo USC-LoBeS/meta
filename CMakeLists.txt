@@ -27,7 +27,7 @@ include(${ITK_USE_FILE})
 find_package(VTK 9 REQUIRED)
 
 
-# Where to get additional modules (Iyad check this)
+# Where to get additional modules
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/")
 
 # Set the include directories
