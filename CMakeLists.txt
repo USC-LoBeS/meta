@@ -19,13 +19,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Build shared libraries
 set(BUILD_SHARED_LIBS ON)
 
-# Get ITK
+# # Get Eigen FIRST
+find_package(Eigen3 CONFIG REQUIRED)
+
+# Get ITK and VTK
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
-
-# Get VTK
 find_package(VTK 9 REQUIRED)
-
 
 # Where to get additional modules
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/")
@@ -80,7 +80,3 @@ install(TARGETS cmrep cmrep_dijkstra cmrep_vskel vtklevelset
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
 )
-
-
-
-

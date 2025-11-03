@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.0.1] - 2025-11-02
+- Fixed bug in reorienting streamlines.
+- Updated CM-Rep code to be compatible with latest update of VTK and ITK.
+
 ### [2.0.0] - 2025-10-02
 - Added support for multiple white matter bundle formats: `trk`, `trx`, `tt.gz`, `tck`.  
 - Added option to invert the transform matrix.  
