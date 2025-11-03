@@ -21,6 +21,7 @@ set(BUILD_SHARED_LIBS ON)
 
 # # Get Eigen FIRST
 find_package(Eigen3 CONFIG REQUIRED)
+find_package(LibXml2 REQUIRED)
 
 # Get ITK and VTK
 find_package(ITK REQUIRED)
