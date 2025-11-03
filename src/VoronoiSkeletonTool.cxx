@@ -48,11 +48,14 @@
 
 #include "ReadWriteVTK.h"
 
+
 using namespace std;
 
 typedef std::pair<vtkIdType, vtkIdType> VertexPair;
 typedef std::set< std::pair<vtkIdType, vtkIdType> > VertexPairSet;
 typedef std::vector<VertexPair> VertexPairArray;
+
+
 
 void WriteVTKData(vtkUnstructuredGrid *data, string fn)
 {
@@ -451,44 +454,70 @@ int main(int argc, char *argv[])
   vtkBoundingBox fBoundBox;
   fBoundBox.SetBounds(bbBnd);
 
-  // Create a temporary file where to store the points
-#ifndef WIN32
-  char fnTemplate[] = "/tmp/voronoi_pts.XXXXXX";
-  char *fnPoints = mktemp(fnTemplate);
-#else
-  char *fnPoints = tmpnam(NULL);
-#endif
-  cout << "Storing mesh point coordinates in " << fnPoints << endl;
-  FILE *f = fopen(fnPoints, "wt");
-  fprintf(f, "%d\n3\n", (int) bnd->GetNumberOfPoints());
-  for(vtkIdType i = 0; i < bnd->GetNumberOfPoints(); i++)
-    fprintf(f, "%f %f %f\n", bnd->GetPoint(i)[0], bnd->GetPoint(i)[1], bnd->GetPoint(i)[2]);
-  fclose(f);
+  // 1) Create temporary file for points
+  char fnTemplate[] = "/tmp/qh_pts.XXXXXX";
+  int fd = mkstemp(fnTemplate);
+  if (fd == -1) {
+    perror("mkstemp(qh_pts)");
+    return 2;
+  }
+  std::string fnPoints = fnTemplate;
 
-  // Call Qvoronoi 
-  // qvoronoi p Fv < $WORK/$ID.boundary_points.txt > $WORK/$ID.voronoi.txt
-  string fnVoronoiOutput = string(fnPoints) + "_voronoi.txt";
-  char command[1024];
-  sprintf(command, "%s p Fv < %s > %s", fnQVoronoi.c_str(), fnPoints, fnVoronoiOutput.c_str());
-  cout << "Executing system command \"" << command << "\"" << endl;
-  if(system(command) < 0)
-    {
-    cerr << "Call to QVoronoi failed" << endl;
-    return -1;
-    }
+  // Write points into the file in the format qvoronoi:
+  FILE* pf = fdopen(fd, "w");
+  if (!pf) {
+    perror("fdopen(points)");
+    unlink(fnTemplate);
+    return 2;
+  }
+  fprintf(pf, "%d\n3\n", (int)bnd->GetNumberOfPoints());
+  for (vtkIdType i = 0; i < bnd->GetNumberOfPoints(); ++i) {
+    double p[3]; bnd->GetPoint(i, p);
+    fprintf(pf, "%f %f %f\n", p[0], p[1], p[2]);
+  }
+  fclose(pf);
+
+  // 2) Create temporary file path for qvoronoi output
+  char fnOutTemplate[] = "/tmp/qh_out.XXXXXX";
+  int fdout = mkstemp(fnOutTemplate);
+  if (fdout == -1) {
+    perror("mkstemp(qh_out)");
+    unlink(fnTemplate);
+    return 2;
+  }
+  close(fdout);
+  std::string fnVoronoiOutput = fnOutTemplate;
+
+  char command[512];
+  snprintf(command, sizeof(command), "%s p Fv < %s > %s",
+          fnQVoronoi.c_str(), fnPoints.c_str(), fnVoronoiOutput.c_str());
+  int rc = system(command);
+  if (rc != 0) {
+    fprintf(stderr, "qvoronoi failed (rc=%d)\n", rc);
+    unlink(fnTemplate);
+    unlink(fnOutTemplate);
+    return 3;
+  }
+
+  // 4) Open the output file for parsing:
+  std::ifstream fin(fnVoronoiOutput.c_str());
+  if (!fin) {
+    fprintf(stderr, "cannot open Voronoi output: %s\n", fnVoronoiOutput.c_str());
+    unlink(fnTemplate);
+    unlink(fnOutTemplate);
+    return 5;
+  }
 
   // Array of generating points for each cell
   VertexPairArray pgen;
 
-  // Load the file
-  ifstream fin(fnVoronoiOutput.c_str());
-
   // Load the numbers
   size_t nv, np, junk;
-  
+
   // First two lines
   fin >> junk;
   fin >> nv; 
+  
 
   vtkSelectEnclosedPoints *sel = vtkSelectEnclosedPoints::New();
   sel->SetTolerance(xSearchTol);
@@ -522,9 +551,11 @@ int main(int argc, char *argv[])
   for(size_t i = 0; i < nv; i++)
     {
     double x,y,z;
+
     fin >> x;
     fin >> y;
     fin >> z;
+
     pts->SetPoint(i,x,y,z);
 
     // Is this point outside of the bounding box
@@ -644,7 +675,6 @@ int main(int argc, char *argv[])
         // add the pair of generators
         pgen.push_back(make_pair(ip1, ip2)); // TODO: is this numbering 0-based?
 
-
         // For each vertex of the cell, add the generating points to its (tetra)hedra
         for(size_t k = 0; k < m; k++)
           {
@@ -679,13 +709,13 @@ int main(int argc, char *argv[])
   cout << "Edge contraint pruned " << npruned_edge << " faces." << endl;
   cout << "Geodesic to Euclidean distance ratio contraint (" << xPrune << ") pruned " << npruned_geo << " faces." << endl;
 
+
   // Clean up files
-  if (fin.is_open()) 
-    {
-    fin.close();
-    remove(fnVoronoiOutput.c_str());
-    } 
-  remove(fnPoints);
+  if (fin.is_open()) {
+      fin.close();
+      unlink(fnVoronoiOutput.c_str());
+  }
+  unlink(fnPoints.c_str());
 
   // Did we get tetrahedra?
   if(fnTetraMesh.size()) 
@@ -821,6 +851,7 @@ int main(int argc, char *argv[])
   cout << "Surface area: " << int_area << endl;
   cout << "Mean thickness: " << int_thick / int_area << endl;
     
+  // vtkPolyData *skelfinal = final;
   vtkPolyData *skelfinal = c2p->GetPolyDataOutput();
 
   // Quadric clustering
@@ -837,6 +868,7 @@ int main(int argc, char *argv[])
       ceil(fbb.GetLength(0) / binsize), 
       ceil(fbb.GetLength(1) / binsize),
       ceil(fbb.GetLength(2) / binsize));
+    // fCluster->SetInputData(skelfinal);
     fCluster->SetInputData(c2p->GetPolyDataOutput());
     fCluster->SetCopyCellData(1);
     fCluster->Update();
@@ -852,12 +884,15 @@ int main(int argc, char *argv[])
       (int) fCluster->GetOutput()->GetNumberOfPoints(),  
       (int) fCluster->GetOutput()->GetNumberOfCells());
 
+
     // Convert cell data to point data again
     vtkCellDataToPointData *c2p = vtkCellDataToPointData::New();
     c2p->SetInputConnection(fCluster->GetOutputPort());
     c2p->PassCellDataOn();
     c2p->Update();
     skelfinal = c2p->GetPolyDataOutput();
+
+
     }
 
   // Write the skeleton out
@@ -1067,16 +1102,7 @@ int main(int argc, char *argv[])
         // Set thickness, depth
         itthick.Set(t);
         itdepth.Set(d / t);
-        /*
-          {
-          cout << "Index: " << rit.GetIndex() << endl;
-          cout << "Point: " << p << endl;
-          cout << "Distance: " << d << endl;
-          cout << "Thickness: " << t << endl;
-          cout << "Matching cell: " << cellid << endl;
-          cout << "Corr.Point: " << xs[0] << " " << xs[1] << " " << xs[2] << endl;
-          }
-        */
+
         }
       }
 
@@ -1108,7 +1134,8 @@ int main(int argc, char *argv[])
 
     // Compute all the edges
     typedef ImmutableSparseArray<double> ImmutableArr;
-    typedef ImmutableArr::VNLSourceType MutableArr;
+    typedef vnl_sparse_matrix<double> MutableArr;
+    
 
     // Initialize the adjacency matrix
     size_t np = xMesh->GetNumberOfPoints();
@@ -1189,8 +1216,6 @@ int main(int argc, char *argv[])
     ofstream of1(fnDist.c_str());
     of1 << mDist << endl;
     of1.close();
-    // vnl_matlab_filewrite exporter(argv[3]);
-    // exporter.write(mDist, "dist");
 
     // Save the coordinates of the landmarks
     vnl_matrix<double> mCoord(nRandSamp, 3, 0.0);
@@ -1206,12 +1231,12 @@ int main(int argc, char *argv[])
     ofstream of2(fnXYZ.c_str());
     of2 << mCoord << endl;
     of2.close();
-    // vnl_matlab_filewrite exporter2(argv[2]);
-    // exporter2.write(mCoord, "xyz");
 
     delete[] xLandmarks;
     delete[] row_index;
     delete[] col_index;
     }
+
+  return 0;
 }
 

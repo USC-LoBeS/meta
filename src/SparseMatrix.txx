@@ -79,9 +79,10 @@ ImmutableSparseArray<TVal>
 }
 
 template<class TVal>
+template<typename U, typename>
 void
 ImmutableSparseArray<TVal>
-::SetFromVNL(VNLSourceType &src)
+::SetFromVNL(vnl_sparse_matrix<TVal> &src)
 {
   size_t i, j;
   
@@ -111,7 +112,7 @@ ImmutableSparseArray<TVal>
   size_t k = 0;
   for(i = 0; i < src.rows(); i++)
     {
-    typename VNLSourceType::row &r = src.get_row(i);
+    typename vnl_sparse_matrix<TVal>::row &r = src.get_row(i);
     for(j = 0; j < r.size(); j++, k++)
       {
       xColIndex[k] = r[j].first;

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <atomic>
 #include <stdexcept>
 
 class AbstractImmutableSparseArray
@@ -27,6 +28,21 @@ public:
   virtual size_t GetNumberOfSparseValues() const = 0;
 };
 
+
+template <class TVal, typename Enable = void>
+class ImmutableSparseArrayVNLSupport {};
+
+template <class TVal>
+  class ImmutableSparseArrayVNLSupport<TVal, std::enable_if_t<std::is_base_of_v<std::atomic<TVal>, TVal>>>
+{
+public:
+  using VNLSourceType = vnl_sparse_matrix<TVal>;
+  void SetFromVNL(VNLSourceType &src);
+};
+
+
+
+
 template<class TVal>
 class ImmutableSparseArray : public AbstractImmutableSparseArray
 {
@@ -35,7 +51,10 @@ public:
   typedef ImmutableSparseArray<TVal> Self;
 
   // Typedef for import from VNL
-  typedef vnl_sparse_matrix<TVal> VNLSourceType;
+  // using VNLSourceType = std::enable_if_t<!std::is_arithmetic_v<TVal>, void>;
+  // using VNLSourceType = std::enable_if_t<std::is_arithmetic_v<TVal>, vnl_sparse_matrix<TVal>>;
+
+  // typedef vnl_sparse_matrix<TVal> VNLSourceType;
 
   // Typedefs for import from STL structures
   typedef std::pair<size_t, TVal> STLEntryType;
@@ -49,7 +68,8 @@ public:
   virtual ~ImmutableSparseArray();
 
   // Assignment operator for VNL
-  void SetFromVNL(VNLSourceType &src);
+  template <typename U = TVal, typename = std::enable_if_t<std::is_arithmetic_v<U>>>
+  void SetFromVNL(vnl_sparse_matrix<TVal> &src);
 
   // Assignment operator that takes an array of lists
   void SetFromSTL(STLSourceType &src, size_t nColumns);

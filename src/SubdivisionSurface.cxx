@@ -415,7 +415,7 @@ PickTrianglesWithLabel(const MeshLevel &src, size_t label, MeshLevel &dst, std::
   tmg.GenerateMesh();
 
   // We need a matrix from new vertices to parent vertices. The matrix is just ones and zeros
-  ImmutableSparseMatrix<double>::VNLSourceType w_vnl(vtx_sub_to_full.size(), src.nVertices);
+  vnl_sparse_matrix<double> w_vnl(vtx_sub_to_full.size(), src.nVertices);
   for(size_t j = 0; j < vtx_sub_to_full.size(); j++)
     w_vnl(j, vtx_sub_to_full[j]) = 1.0;
 
