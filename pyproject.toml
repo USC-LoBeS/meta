@@ -6,22 +6,31 @@ build-backend = "setuptools.build_meta"
 name = "meta"
 version = "2.0.1"
 authors = [
-  { name="Iyad Ba Gari", email="iyad.bagari@usc.edu" },
+  { name = "Iyad Ba Gari", email = "iyad.bagari@usc.edu" },
 ]
+
 maintainers = [
-  { name="Iyad Ba Gari", email="iyad.bagari@usc.edu" },
+  { name = "Iyad Ba Gari", email = "iyad.bagari@usc.edu" },
 ]
 
 description = "Medial Tractography Analysis (MeTA) for along-tract analysis of white matter bundles"
-keywords = ["Diffusion MRI", "tractography", "white matter bundle", "medial volume", "along-tract analysis"]
- 
 readme = "README.md"
-project.license = { file="LICENSE.txt" }
+license = { file = "LICENSE.txt" }
 requires-python = ">=3.11"
+
+keywords = [
+  "Diffusion MRI",
+  "Tractography",
+  "White Matter Bundle",
+  "Medial Volume",
+  "Along-Tract Analysis",
+  "Tractometry"
+]
+
 classifiers = [
-    'Intended Audience :: Science/Research',
-    'Programming Language :: Python :: 3',
-    'Operating System :: Unix'
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Operating System :: Unix"
 ]
 
 [project.urls]
@@ -40,4 +49,3 @@ meta = ["*.yaml"]
 [tool.setuptools.packages.find]
 include = ["meta*"]
 exclude = ["src*", "environment*", "CMakeLists*", "resources*"]
-
