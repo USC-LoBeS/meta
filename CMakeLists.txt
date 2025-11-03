@@ -21,7 +21,11 @@ set(BUILD_SHARED_LIBS ON)
 
 # # Get Eigen FIRST
 find_package(Eigen3 CONFIG REQUIRED)
+
+# Get LibXml2
 find_package(LibXml2 REQUIRED)
+include_directories(${LibXml2_INCLUDE_DIRS})
+link_libraries(${LibXml2_LIBRARIES})
 
 # Get ITK and VTK
 find_package(ITK REQUIRED)
