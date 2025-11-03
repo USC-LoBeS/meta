@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "meta"
-version = "2.0.0"
+version = "2.0.1"
 authors = [
   { name="Iyad Ba Gari", email="iyad.bagari@usc.edu" },
 ]
@@ -16,8 +16,8 @@ description = "Medial Tractography Analysis (MeTA) for along-tract analysis of w
 keywords = ["Diffusion MRI", "tractography", "white matter bundle", "medial volume", "along-tract analysis"]
  
 readme = "README.md"
-license = { file="LICENSE.txt" }
-requires-python = ">=3.8,<3.12"
+project.license = { file="LICENSE.txt" }
+requires-python = ">=3.11"
 classifiers = [
     'Intended Audience :: Science/Research',
     'Programming Language :: Python :: 3',
