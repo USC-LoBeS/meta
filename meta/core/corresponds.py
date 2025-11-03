@@ -94,8 +94,8 @@ def get_alignment(model, subject, n_segments, mask_img, transform=None, inverse=
     centroids = get_centroids(transformed_subject, n_points=500, threshold=2., n_centroids=num_clusters)
 
     ## Check if the subject centroids are flipped compared to the model:
-    s_centroid = reorient_streamlines(m_centroid, s_centroid)
-    centroids = reorient_streamlines(m_centroid, centroids)
+    s_centroid = reorient_streamlines(s_centroid, m_centroid)
+    centroids = reorient_streamlines(centroids, m_centroid)
 
     ## Compute the correspondence between model and subject centroids:
     dtw_corres = []

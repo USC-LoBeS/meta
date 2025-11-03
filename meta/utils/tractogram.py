@@ -1,41 +1,36 @@
 import numpy as np
+from copy import deepcopy
+from dipy.tracking.streamlinespeed import set_number_of_points
 
 
-def reorient_streamlines(m_centroid, s_centroids):
+
+def reorient_streamlines(streamlines, model_streamline, n_points=15):
     """
-    Reorients the subject centroids based on the model centroid.
-
-    Parameters:
-        m_centroid: Model centroid
-        s_centroids: List of subject centroids
+    Reorients a bundle of streamlines to match a model streamlines.
+    Args:
+        streamlines : subject streamlines
+        model_streamline : Model streamlines
+        n_points (int): Number of points to resample streamlines for comparison
     Returns:
-        oriented_s_centroids (list): List of reoriented subject centroids
+        reoriented (list): List of reoriented subject streamlines
     """
 
-    def is_flipped(m_centroid, s_centroid):
-        """
-        checks if subjects centroid is flipped compared to the model centroid.
-        """
-        start_distance = np.linalg.norm(m_centroid[0] - s_centroid[-1])
-        start = np.linalg.norm(m_centroid[-1] - s_centroid[0])
+    # Ensure inputs are lists of arrays if we have single streamline
+    if isinstance(streamlines, np.ndarray) and streamlines.ndim == 2:
+        streamlines = [streamlines]
+    if isinstance(model_streamline, np.ndarray) and model_streamline.ndim == 2:
+        model_streamline = [model_streamline]
 
-        end_distance = np.linalg.norm(m_centroid[-1] - s_centroid[-1])
-        end = np.linalg.norm(m_centroid[0] - s_centroid[0])
-
-        return (start_distance < end_distance) and (start < end)
+    reoriented = deepcopy(streamlines)
+    subject_array = set_number_of_points(streamlines, nb_points=n_points)
+    model_array   = set_number_of_points(model_streamline, nb_points=n_points)
 
 
-    # Ensure inputs are lists of arrays:
-    if isinstance(s_centroids, np.ndarray) and s_centroids.ndim == 2:
-        s_centroids = [s_centroids]
-    if isinstance(m_centroid, np.ndarray) and m_centroid.ndim == 2:
-        m_centroid = [m_centroid]
-        
-    oriented_s_centroids = []
-    for s_centroid in s_centroids:
-        if is_flipped(m_centroid, s_centroid):
-            oriented_s_centroids.append(s_centroid[::-1])
-        else:
-            oriented_s_centroids.append(s_centroid)
+    for idx, sl in enumerate(subject_array):
+        dist_direct = np.sum(np.linalg.norm(sl - model_array, axis=1))
+        dist_flipped = np.sum(np.linalg.norm(sl[::-1] - model_array, axis=1))
+        if dist_direct > dist_flipped:
+            reoriented[idx] = reoriented[idx][::-1]
 
-    return oriented_s_centroids
+    return reoriented
+
