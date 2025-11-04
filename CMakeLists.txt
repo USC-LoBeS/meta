@@ -30,7 +30,7 @@ find_package(Eigen3 CONFIG REQUIRED)
 # Get ITK and VTK
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
-set(VTK_MODULE_USE_EXTERNAL_LibXml2 ON)
+# set(VTK_MODULE_USE_EXTERNAL_LibXml2 ON)
 find_package(VTK 9 REQUIRED)
 
 # Where to get additional modules
