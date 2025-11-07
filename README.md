@@ -29,16 +29,17 @@ Create an environment with Python version >=3.9 and <3.12. For example:
 
 ```bash
 conda config --add channels bioconda
-conda create -n meta python==3.10
-conda install bioconda::meta-neuro=2.0.0
+conda create -n meta python==3.13
+conda activate meta
+conda install bioconda::meta-neuro=2.0.1
 ```
 
 ### Singularity Installation
 To pull the singularity image using apptainer:
 ```bash
-apptainer pull meta_2_0_0.sif docker://quay.io/biocontainers/meta-neuro:2.0.0--py311h62e25fe_0
+apptainer pull meta_2_0_1.sif docker://quay.io/biocontainers/meta-neuro:2.0.1--py313h47f2c4e_0
 
-apptainer run meta_2_0_0.sif meta --help
+apptainer run meta_2_0_1.sif meta --help
 ```
 > NOTE: Use `meta --help` to see the package options.
 
